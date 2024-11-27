@@ -1,7 +1,8 @@
-//your JS code here.
-
 // Do not change code below this line
-// This code will just display the questions to the screen
+const questionsElement = document.getElementById("questions");
+const submitButton = document.getElementById("submit");
+const scoreElement = document.getElementById("score");
+
 const questions = [
   {
     question: "What is the capital of France?",
@@ -30,6 +31,9 @@ const questions = [
   },
 ];
 
+// Load user answers from session storage
+let userAnswers = JSON.parse(sessionStorage.getItem('progress')) || Array(questions.length).fill(null);
+
 // Display the quiz questions and choices
 function renderQuestions() {
   for (let i = 0; i < questions.length; i++) {
@@ -37,6 +41,7 @@ function renderQuestions() {
     const questionElement = document.createElement("div");
     const questionText = document.createTextNode(question.question);
     questionElement.appendChild(questionText);
+
     for (let j = 0; j < question.choices.length; j++) {
       const choice = question.choices[j];
       const choiceElement = document.createElement("input");
@@ -46,6 +51,10 @@ function renderQuestions() {
       if (userAnswers[i] === choice) {
         choiceElement.setAttribute("checked", true);
       }
+      choiceElement.addEventListener('change', () => {
+        userAnswers[i] = choiceElement.value;
+        sessionStorage.setItem('progress', JSON.stringify(userAnswers));
+      });
       const choiceText = document.createTextNode(choice);
       questionElement.appendChild(choiceElement);
       questionElement.appendChild(choiceText);
@@ -53,4 +62,24 @@ function renderQuestions() {
     questionsElement.appendChild(questionElement);
   }
 }
+
+// Calculate and display the score
+function calculateScore() {
+  let score = 0;
+  for (let i = 0; i < questions.length; i++) {
+    if (userAnswers[i] === questions[i].answer) {
+      score++;
+    }
+  }
+  return score;
+}
+
+// Handle the submit button click
+submitButton.addEventListener("click", () => {
+  const score = calculateScore();
+  scoreElement.textContent = `Your score is ${score} out of ${questions.length}.`;
+  localStorage.setItem('score', score);
+});
+
+// Initial render of questions
 renderQuestions();
