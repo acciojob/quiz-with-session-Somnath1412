@@ -55,4 +55,22 @@ function renderQuestions() {
     questionsElement.appendChild(questionElement);
   }
 }
+
+function calculateScore() {
+  let score = 0;
+  for (let i = 0; i < questions.length; i++) {
+    if (userAnswers[i] === questions[i].answer) {
+      score++;
+    }
+  }
+  return score;
+}
+
+// Handle the submit button click
+submitButton.addEventListener("click", () => {
+  const score = calculateScore();
+  scoreElement.textContent = `Your score is ${score} out of ${questions.length}.`;
+  localStorage.setItem('score', score);
+});
+
 renderQuestions();
