@@ -31,7 +31,7 @@ const questions = [
     answer: "Ottawa",
   },
 ];
-
+let userAnswers = JSON.parse(sessionStorage.getItem('progress')) || Array(questions.length).fill(null);
 // Display the quiz questions and choices
 function renderQuestions() {
   for (let i = 0; i < questions.length; i++) {
